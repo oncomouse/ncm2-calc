@@ -9,11 +9,11 @@ let g:ncm2_calc#proc = yarp#py3({
       \ })
 let g:ncm2_calc#calc_source = get(g:, 'ncm2_calc#calc_source', {
       \ 'name': 'calc',
-      \ 'priority': 10,
+      \ 'priority': 2,
       \ 'ready': 0,
       \ 'complete_length': 3,
       \ 'mark': g:ncm2_calc#mark,
-      \ 'word_pattern': '(?:\\d+(?:\\.\\d+)?|\\s*)+$',
+      \ 'word_pattern': '(?:\\d+(?:\\.\\d+)?|\\s*|\\+|\\*|/|\\-|%|\\(|\\))+$',
       \ 'on_complete': 'ncm2_calc#on_complete',
       \ })
 let g:ncm2_calc#source = extend(g:ncm2_calc#calc_source,

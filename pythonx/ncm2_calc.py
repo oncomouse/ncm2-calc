@@ -8,25 +8,25 @@ class Source(Ncm2Source):
     def __init__(self, vim):
         super(Source, self).__init__(vim)
 
-        self.vars = {}
-        self.word_pattern = self.regex()
+        self.vim = vim
         self.ignore_pattern = r'^(?:\d+(?:\.\d+)?|\s)+$'
-        # self.is_volatile = True
-        self.complete_length = 3
+
+    def __print(self, output):
+        self.vim.command("python3 print(\"{}\")".format(repr(output)))
 
     def on_complete(self, context):
         candidates = []
         try:
-            calculates = re.findall(self.word_pattern, context['base'])
-            if re.match(self.ignore_pattern, calculates[0]):
+            # calculates = re.findall(self.word_pattern, context['base'])
+            if re.match(self.ignore_pattern, context['base']):
                 return []
 
-            output = str(eval(calculates[0]))
+            output = str(eval(context['base']))
             candidates += [{
                 'word':
                 ' = {}'.format(output),
                 'abbr':
-                '{} = {}'.format(calculates[0].strip(), output),
+                '{} = {}'.format(context['base'].strip(), output),
                 'dup':
                 1
             }]
@@ -37,16 +37,8 @@ class Source(Ncm2Source):
             }]
         except:
             pass
-        self.complete(context, context['startccol'], candidates)
-
-    def regex(self):
-        parts = []
-        parts += [r'\d+(?:\.\d+)?']
-        parts += [r'\s*']
-        parts += [re.escape(x) for x in ['+', '*', '/', '-', '%']]
-        parts += [re.escape(x) for x in ['(', ')']]
-        regex = r'(?:' + r'|'.join(parts) + r')+$'
-        return regex
+        self.complete(context, context['startccol'] + len(context['base']),
+                      candidates)
 
 
 source = Source(vim)
